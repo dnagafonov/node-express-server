@@ -1,0 +1,15 @@
+* {
+    margin: 0;
+}
+body {
+    background: linear-gradient(19deg, #FFCB52, #FF7802);
+}
+.header {
+    height: 200px;
+    width: 100%;
+    padding: 5% 0;
+    text-align: center;
+    font-size: 100px;
+    font-family: Consolas;
+    background-color: rgba(255, 238, 0, 0.2);
+}

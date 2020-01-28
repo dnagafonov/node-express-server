@@ -1,48 +1,42 @@
 const express = require(`express`);
-const readStream = require(`fs`).createReadStream(`${__dirname}/fileToRead.txt`);
-const booksRouter = express.Router();
-
 const app = express();
-const hostName = `127.0.0.1`;
-const port = 8000;
+const bodyParser = require('body-parser'); 
 
-const arrayOfNum = [ 1,2,3,4,5 ];
-const products = [ `apple`, `orange`, `lemon`, `strawberry`];
+const url = `127.0.0.1`;
+const port = process.env.port || 3300;
+let family = [ 
+    {
+        "name": "Ivan",
+        "surname": "Butko",
+        "age": 61,
+        "wife": "Valyuha"
+    },
+    {
+        "name": "Valya",
+        "surname": "Butko",
+        "age": 59,
+        "husband": "Ivan"
+    },
+    {
+        "name": "Anna",
+        "surname": "Butko",
+        "age": 25,
+        "husband": "Kostya"
+    }
+];
 
-app.get(`/`, (request, response) => {
-    response.send(readStream)
+app.use(express.static("public"));
+
+app.get(`/family`, (req, res) => {
+    res.json(family);
 });
 
-app.get(`/products`, (request, response) => {
-    console.log(request.query.page);
-    response.send(products);
+app.get(`/family/:name`, (req, res) => {
+    console.log(`Send ${req.params.name} informaion`);
+    const person = family.find(el => el.name === req.params.name);
+    res.json(person);
 });
 
-app.get(`/products/:id`, (req, res) => {
-    if(!products[req.params.id])
-        res.status(404).send(`Invalid index`);
-    else
-        res.send(products[req.params.id])
-});
-
-app.get(`/download`, (req, res) => {
-    res.download(`./fileToread`);
-})
-
-app.get(`/git`, (req, res) => {
-    res.redirect(`https://github.com/dnagafonov/node-express-server`);
-})
-
-booksRouter.get(`/`, (req, res) => {
-    res.send(`Books`);
-});
-
-booksRouter.get(`/about`, (req, res) => {
-    res.send(`About books`);
-});
-
-app.use(`/books`, booksRouter);
-
-app.listen(port, hostName, () => {
-    console.log(`Server ${hostName} on port ${port}`);
+app.listen(port, url, () => {
+    console.log(`Server ${url} on port ${port}`);
 })
