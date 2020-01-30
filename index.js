@@ -33,8 +33,8 @@ app.use((req, res, next) => {
 app.use(express.static("public"));
 app.use(`/family`, familyRouter);
 app.set(`view engine`, `pug`);
-//app.set(`views`, `template`);
-app.set(`views`, `./views/template.pug`);
+app.set(`views`, `./views`);
+//app.set(`views`, `./views/template.pug`);
 
 familyRouter.get(`/`, (req, res) => {
     res.json(family);
@@ -43,6 +43,14 @@ familyRouter.get(`/`, (req, res) => {
 familyRouter.get(`/query`, (req, res) => {
     console.log(req.query);
     res.send(req.query);
+});
+
+familyRouter.get(`/temp`, (req, res) => {
+    res.render(`template`, {
+        title: "test title",
+        h1mes: "Thats my family!",
+        family
+    });
 });
 
 familyRouter.get(`/:name`, (req, res) => {
