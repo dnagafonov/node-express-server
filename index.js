@@ -1,5 +1,6 @@
 const express = require(`express`);
 const app = express();
+const familyRouter = express.Router();
 const bodyParser = require('body-parser'); 
 
 const url = `127.0.0.1`;
@@ -25,18 +26,40 @@ let family = [
     }
 ];
 
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.url} IP: ${req.ip}`);
+    next();
+})
 app.use(express.static("public"));
+app.use(`/family`, familyRouter);
+app.set(`view engine`, `pug`);
+//app.set(`views`, `template`);
+app.set(`views`, `./views/template.pug`);
 
-app.get(`/family`, (req, res) => {
+familyRouter.get(`/`, (req, res) => {
     res.json(family);
 });
 
-app.get(`/family/:name`, (req, res) => {
-    console.log(`Send ${req.params.name} informaion`);
-    const person = family.find(el => el.name === req.params.name);
-    res.json(person);
+familyRouter.get(`/query`, (req, res) => {
+    console.log(req.query);
+    res.send(req.query);
+});
+
+familyRouter.get(`/:name`, (req, res) => {
+    const existedPerson = family.find(el => el.name === req.params.name);
+    if(existedPerson){
+        console.log(`Send ${req.params.name} informaion`);
+        res.status(200).json(existedPerson);
+    }
+    else
+        res.status(404).send(`404`);
+});
+
+app.get((err, req, res, next) => {
+    console.log(err.stack);
+    res.status(500).send(err.stack);
 });
 
 app.listen(port, url, () => {
-    console.log(`Server ${url} on port ${port}`);
+    console.log(`Server ${url} on port ${port} ${new Date}`);
 })
